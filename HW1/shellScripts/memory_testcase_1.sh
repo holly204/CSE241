@@ -21,7 +21,6 @@ do
     echo "Test $i completed: $eps sec"
 done
 
-echo ${events_per_sec[@]}
 
 # Function to calculate average
 calculate_average() {
@@ -43,7 +42,7 @@ for t in "${events_per_sec[@]}"; do
     deviation=$(echo "$t - $avg_eps" | bc)
     sum_sq=$(echo "$sum_sq + ($deviation)^2" | bc)
 done
-std_dev=$(echo "scale=2; sqrt($sum_sq / ${#events_per_sec[@]})" | bc)
+std_dev=$(echo "scale=6; sqrt($sum_sq / ${#events_per_sec[@]})" | bc)
 
 # Reporting results
 echo "Performance Test Results for Total Time:"
