@@ -3,9 +3,10 @@
 # Number of times to run the test
 RUNS=5
 
+MEMORY_BLOCK_SIZE = 1G
 
 # Array to store all times for standard deviation calculation
-declare -a total_time
+total_time=()
 
 echo "Running Sysbench memory tests..."
 
@@ -13,13 +14,11 @@ for (( i=1; i<=RUNS; i++ ))
 do
     echo "Test $i of $RUNS"
     # Run sysbench and capture the total time
-    eps=$(sysbench memory --memory_block_size=1 run | grep "total time:" | awk '{print $3}')
+    eps=$(sysbench memory --memory-block-size=$MEMORY_BLOCK_SIZE run | grep "total time:" | awk '{print $3}')
     total_time+=($eps)
 
     echo "Test $i completed: $eps sec"
 done
-
-echo "$total_time"
 
 # Function to calculate average
 calculate_average() {
