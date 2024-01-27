@@ -30,20 +30,18 @@ calculate_average() {
     echo "scale=2; $sum / ${#total_time_values[@]}" | bc
 }
 
-# Function to calculate standard deviation
-calculate_std() {
-    avg=$1
-    sum_sq=0
-    for value in "${total_time_values[@]}"; do
-        sum_sq=$(echo "$sum_sq + ($value - $avg)^2" | bc)
-    done
-    echo "scale=2; sqrt($sum_sq / ${#total_time_values[@]})" | bc
-}
-
 # Calculate average, min, max, std for total time
 avg_time=$(calculate_average)
 min_time=$(printf "%s\n" "${total_time_values[@]}" | sort -n | head -n1)
 max_time=$(printf "%s\n" "${total_time_values[@]}" | sort -n | tail -n1)
+
+# Calculating standard deviation
+sum_sq=0
+for t in "${total_time_values[@]}"; do
+    deviation=$(echo "$t - $avg_time" | bc)
+    sum_sq=$(echo "$sum_sq + ($deviation)^2" | bc)
+done
+std_dev=$(echo "scale=2; sqrt($sum_sq / ${#total_time_values[@]})" | bc)
 std_time=$(calculate_std $avg_time)
 
 # Output results
