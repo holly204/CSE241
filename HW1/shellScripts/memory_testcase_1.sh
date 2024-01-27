@@ -24,27 +24,25 @@ done
 # Function to calculate average
 calculate_average() {
     sum=0
-    for value in "${total_time_values[@]}"; do
-        sum=$(echo "$sum + $value" | bc)
+    for t in "${total_time_values[@]}"; do
+        sum=$(echo "$sum + $t" | bc)
     done
     echo "scale=2; $sum / ${#total_time_values[@]}" | bc
 }
 
-# Function to calculate standard deviation
-calculate_std() {
-    avg=$1
-    sum_sq=0
-    for value in "${total_time_values[@]}"; do
-        sum_sq=$(echo "$sum_sq + ($value - $avg)^2" | bc)
-    done
-    echo "scale=2; sqrt($sum_sq / ${#total_time_values[@]})" | bc
-}
 
 # Calculate average, min, max, and standard deviation for total time
-avg_time=$(calculate_average)
 min_time=$(printf "%s\n" "${total_time_values[@]}" | sort -n | head -n1)
 max_time=$(printf "%s\n" "${total_time_values[@]}" | sort -n | tail -n1)
-std_time=$(calculate_std $avg_time)
+avg_time=$(calculate_average)
+
+# Calculating standard deviation
+sum_sq=0
+for t in "${events_per_sec[@]}"; do
+    deviation=$(echo "$t - $avg_eps" | bc)
+    sum_sq=$(echo "$sum_sq + ($deviation)^2" | bc)
+done
+std_dev=$(echo "scale=2; sqrt($sum_sq / ${#total_time_values[@]})" | bc)
 
 # Output results
 echo "Memory Test Total Time Results (in seconds):"
