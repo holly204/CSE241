@@ -31,7 +31,7 @@ calculate_average() {
 # Calculating minimum, maximum, and average
 min_eps=$(printf "%s\n" "${total_time[@]}" | sort -n | head -n1)
 max_eps=$(printf "%s\n" "${total_time[@]}" | sort -n | tail -n1)
-avg_eps=$(calculate_average)
+avg_eps=$((calculate_average))
 
 # Calculating standard deviation
 sum_sq=0
