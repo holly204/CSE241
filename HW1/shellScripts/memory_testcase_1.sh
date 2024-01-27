@@ -3,9 +3,6 @@
 # Number of tests
 num_tests=5
 
-# Sysbench parameters (adjust as needed)
-MEMORY_BLOCK_SIZE = 1G
-
 # Array to hold the test results
 declare -a results
 
@@ -14,7 +11,7 @@ echo "Starting Sysbench Memory tests..."
 # Running Sysbench tests
 for i in $(seq 1 $num_tests); do
     echo "Test $i of $num_tests..."
-    result=$(sysbench memory run --memory_block_size=$MEMORY_BLOCK_SIZE | grep "total time:" | awk '{print $3}')
+    result=$(sysbench memory run --memory_block_size=1M | grep "total time:" | awk '{print $3}')
     results+=($result)
     echo "Test $i completed: $result seconds"
 done
