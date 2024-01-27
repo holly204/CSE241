@@ -12,9 +12,9 @@ for i in $(seq 1 $num_runs); do
     echo "Running test $i of $num_runs..."
 
     # Run the sysbench fileio test and store the output
-    sysbench fileio --file-total-size=2G --file-test-mode=rndrw prepare
-    output=$(sysbench fileio --file-total-size=2G --file-test-mode=rndrw  run)
-    sysbench fileio --file-total-size=2G --file-test-mode=rndrw cleanup
+    sysbench fileio --file-total-size=1G --file-test-mode=rndrw prepare
+    output=$(sysbench fileio --file-total-size=1G --file-test-mode=rndrw  run)
+    sysbench fileio --file-total-size=1G --file-test-mode=rndrw cleanup
 
     # Extract read and write throughput
     read_throughput=$(echo "$output" | grep "read, MiB/s:" | awk '{print $3}')
