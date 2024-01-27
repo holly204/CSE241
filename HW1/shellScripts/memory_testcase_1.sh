@@ -19,6 +19,8 @@ do
     echo "Test $i completed: $eps sec"
 done
 
+echo "$total_time"
+
 # Function to calculate average
 calculate_average() {
     sum=0
