@@ -13,7 +13,7 @@ for (( i=1; i<=RUNS; i++ ))
 do
     echo "Test $i of $RUNS"
     # Run sysbench and capture the total time
-    eps=$(sysbench memory --memory_block_size=1G run | grep "total time:" | awk '{print $3}')
+    eps=$(sysbench memory --memory_block_size=1M run | grep "total time:" | awk '{print $3}')
     total_time+=($eps)
 
     echo "Test $i completed: $eps sec"
@@ -33,7 +33,7 @@ calculate_average() {
 # Calculating minimum, maximum, and average
 min_eps=$(printf "%s\n" "${total_time[@]}" | sort -n | head -n1)
 max_eps=$(printf "%s\n" "${total_time[@]}" | sort -n | tail -n1)
-avg_eps=$((calculate_average))
+avg_eps=$(calculate_average)
 
 # Calculating standard deviation
 sum_sq=0
