@@ -1,65 +1,52 @@
 #!/bin/bash
 
-# Set memory block size directly in the script
-MEMORY_BLOCK_SIZE="1G"
-
 # Number of tests
 num_tests=5
 
-# Array to store total time results
-total_time_values=()
+# Sysbench parameters (adjust as needed)
+MEMORY_BLOCK_SIZE = 1G
 
-echo "Starting Sysbench memory tests with block size $memory_block_size..."
+# Array to hold the test results
+declare -a results
 
-# Run Sysbench tests
+echo "Starting Sysbench Memory tests..."
+
+# Running Sysbench tests
 for i in $(seq 1 $num_tests); do
-    echo "Running test $i of $num_tests..."
-
-    # Run Sysbench memory test and capture total time
-    total_time=$(sysbench memory --memory-block-size=$MEMORY_BLOCK_SIZE run | grep "total time:" | awk '{print $3}')
-
-    # Store results in the array
-    total_time_values+=("$total_time")
-
-    echo "Test $i completed: Total Time - $total_time seconds"
+    echo "Test $i of $num_tests..."
+    result=$(sysbench memory run --memory_block_size=$MEMORY_BLOCK_SIZE | grep "total time:" | awk '{print $3}')
+    results+=($result)
+    echo "Test $i completed: $result seconds"
 done
 
 # Function to calculate average
 calculate_average() {
-    local sum=0
-    for value in "${total_time_values[@]}"; do
-        sum=$(echo "$sum + $value" | bc -l)
+    sum=0
+    for t in "${results[@]}"; do
+        sum=$(echo "$sum + $t" | bc)
     done
-    local avg=$(echo "$sum / ${#total_time_values[@]}" | bc -l)
-    printf "%.2f\n" "$avg"
+    echo "scale=2; $sum / ${#results[@]}" | bc
 }
 
-# Function to calculate standard deviation
-calculate_std() {
-    local avg=$(calculate_average)
-    local sum_sq=0
-    local n=${#total_time_values[@]}
+# Calculating minimum, maximum, and average
+min=$(printf "%s\n" "${results[@]}" | sort -n | head -n1)
+max=$(printf "%s\n" "${results[@]}" | sort -n | tail -n1)
+avg=$(calculate_average)
 
-    for value in "${total_time_values[@]}"; do
-        sum_sq=$(echo "$sum_sq + ($value - $avg)^2" | bc -l)
-    done
+# Calculating standard deviation
+sum_sq=0
+for t in "${results[@]}"; do
+    sum_sq=$(echo "$sum_sq + ($t - $avg)^2" | bc)
+done
+std_dev=$(echo "scale=2; sqrt($sum_sq / ${#results[@]})" | bc)
 
-    local std=$(echo "sqrt($sum_sq / $n)" | bc -l)
-    printf "%.2f\n" "$std"
-}
+# Reporting results
+echo "Performance Test Results:"
+echo "Average Time: $avg seconds"
+echo "Minimum Time: $min seconds"
+echo "Maximum Time: $max seconds"
+echo "Standard Deviation: $std_dev seconds"
 
-# Calculate average, min, max, and standard deviation for total time
-avg_time=$(calculate_average)
-std_time=$(calculate_std)
-min_time=$(printf "%s\n" "${total_time_values[@]}" | sort -n | head -n1)
-max_time=$(printf "%s\n" "${total_time_values[@]}" | sort -n | tail -n1)
-
-# Output results
-echo "Memory Test Total Time Results (in seconds):"
-echo "Average: $avg_time"
-echo "Minimum: $min_time"
-echo "Maximum: $max_time"
-echo "Standard Deviation: $std_time"
 
 
 
