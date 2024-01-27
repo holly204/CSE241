@@ -13,7 +13,7 @@ for (( i=1; i<=RUNS; i++ ))
 do
     echo "Test $i of $RUNS"
     # Run sysbench and capture the total time
-    eps=$(sysbench memory --memory_block_size=1M run | grep "total time:" | awk '{print $3}')
+    eps=$(sysbench memory --memory_block_size=1 run | grep "total time:" | awk '{print $3}')
     total_time+=($eps)
 
     echo "Test $i completed: $eps sec"
