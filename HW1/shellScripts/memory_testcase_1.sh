@@ -4,12 +4,12 @@
 RUNS=5
 
 # Sysbench parameters (adjust as needed)
-MEMORY_BLOCK_SIZE=1G
+MEMORY_BLOCK_SIZE=1K
 
 # Array to store all times for standard deviation calculation
 declare -a events_per_sec
 
-echo "Running Sysbench CPU tests..."
+echo "Running Sysbench Memory tests..."
 
 for (( i=1; i<=RUNS; i++ ))
 do
@@ -18,8 +18,10 @@ do
     eps=$(sysbench memory --memory_block_size=$MEMORY_BLOCK_SIZE run | grep "total time:" | awk '{print $3}')
     events_per_sec+=($eps)
 
-    echo "Test $i completed: $eps events/sec"
+    echo "Test $i completed: $eps sec"
 done
+
+echo ${events_per_sec[@]}
 
 # Function to calculate average
 calculate_average() {
