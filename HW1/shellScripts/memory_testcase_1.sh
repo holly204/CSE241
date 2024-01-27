@@ -42,12 +42,11 @@ for t in "${total_time_values[@]}"; do
     sum_sq=$(echo "$sum_sq + ($deviation)^2" | bc)
 done
 std_dev=$(echo "scale=2; sqrt($sum_sq / ${#total_time_values[@]})" | bc)
-std_time=$(calculate_std $avg_time)
 
 # Output results
 echo "Memory Test Total Time Results (in seconds):"
 echo "Average: $avg_time"
 echo "Minimum: $min_time"
 echo "Maximum: $max_time"
-echo "Standard Deviation: $std_time"
+echo "Standard Deviation: $std_dev"
 
