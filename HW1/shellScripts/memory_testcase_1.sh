@@ -4,7 +4,7 @@
 RUNS=5
 
 # Sysbench parameters (adjust as needed)
-MEMORY_BLOCK_SIZE=1K
+MEMORY_BLOCK_SIZE=1G
 
 # Array to store all times for standard deviation calculation
 declare -a events_per_sec
@@ -15,7 +15,7 @@ for (( i=1; i<=RUNS; i++ ))
 do
     echo "Test $i of $RUNS"
     # Run sysbench and capture the total time
-    eps=$(sysbench memory --memory_block_size=$MEMORY_BLOCK_SIZE run | grep "total time:" | awk '{print $3}')
+    eps=$(sysbench memory --memory_block_size=$MEMORY_BLOCK_SIZE run | grep "total time:" | awk '{gsub(/s/, ""); print $3}')
     events_per_sec+=($eps)
 
     echo "Test $i completed: $eps sec"
