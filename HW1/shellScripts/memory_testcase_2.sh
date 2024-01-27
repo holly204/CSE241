@@ -18,7 +18,7 @@ do
     eps=$(sysbench memory --memory_block_size=$MEMORY_BLOCK_SIZE run | grep "transferred" | awk '{gsub(/\(/, ""); print $4}')
     events_per_sec+=($eps)
 
-    echo "Test $i completed: $eps sec"
+    echo "Test $i completed: $eps MiB/sec"
 done
 
 
@@ -45,10 +45,10 @@ done
 std_dev=$(echo "scale=6; sqrt($sum_sq / ${#events_per_sec[@]})" | bc)
 
 # Reporting results
-echo "Performance Test Results for Total Time:"
-echo "Average: $avg_eps"
-echo "Minimum: $min_eps"
-echo "Maximum: $max_eps"
+echo "Performance Test Results for Throughput:"
+echo "Average: $avg_eps MiB/sec"
+echo "Minimum: $min_eps MiB/sec"
+echo "Maximum: $max_eps MiB/sec"
 echo "Standard Deviation: $std_dev"
 
 
