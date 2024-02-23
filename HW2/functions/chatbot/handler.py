@@ -2,6 +2,8 @@ import json
 import random
 import datetime
 import requests
+import subprocess
+import os 
 
 def handle(req):
     """handle a request to the function
@@ -19,10 +21,11 @@ def handle(req):
         res = random.choice(answers)
     elif 'figlet' in req.lower():
         text_to_figlet = req.split()[1::]
-        data = {" ".join(text_to_figlet)}
-        url = "http://localhost/function/figlet" 
-        res = requests.post(url, data=data).stdout.decode('utf-8') 
-        return res
+        data = " ".join(text_to_figlet)
+        print(data)
+        gateway_url = "http://10.62.0.5:8080/function/figlet"
+        response = requests.post(gateway_url, data=data)
+        return response.text
         
     else:
         res = "Sorry, I can't answer that."
