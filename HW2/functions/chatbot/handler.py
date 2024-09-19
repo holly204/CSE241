@@ -24,7 +24,7 @@ def handle(req):
         data = " ".join(text_to_figlet)
         print(data)
         gateway_url = "http://10.62.0.5:8080/function/figlet"
-        response = requests.post(gateway_url, data=data)
+        response = requests.post(gateway_url, data=data, timeout=60)
         return response.text
         
     else:
